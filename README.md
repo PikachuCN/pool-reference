@@ -1,15 +1,15 @@
-## Pool Reference V1
-This code is provided under the Apache 2.0 license.
-Note: the draft specification is in the SPECIFICATION.md file.
+## 奇亚矿池参考代码 V1
+此代码是在 Apache 2.0 许可下提供的。
+注意：规范草案在 SPECIFICATION.md 文件中。 
 
-### Summary
-This repository provides a sample server written in python, which is meant to serve as a basis for a Chia Pool.
-While this is a fully functional implementation, it requires some work in scalability and security to run in production.
-An FAQ is provided here: https://github.com/Chia-Network/chia-blockchain/wiki/Pooling-FAQ
+### 概括
+此代码提供一个Python编写的示例服务器，他主要为Chia矿池做参考。
+虽然代码功能齐全，但是需要更多扩展性代码或者安全性方面改进才能在生产环境中运行。
+此处提供了常见问题解答： https://github.com/Chia-Network/chia-blockchain/wiki/Pooling-FAQ
 
 
-### Customizing
-Several things are customizable in this pool reference. This includes:
+### 定制
+矿池参考代码中可以自定义一些内容。 这包括：
 * How long the timeout is for leaving the pool
 * How difficulty adjustment happens
 * Fees to take, and how much to pay in blockchain fees  
@@ -19,8 +19,7 @@ Several things are customizable in this pool reference. This includes:
   `AbstractPoolStore`, by supplying them to `pool_server.start_pool_server`
 * What happens (in terms of response) after a successful login
 
-However, some things cannot be changed. These are described in SPECIFICATION.md, and mostly relate to validation,
-protocol, and the singleton format for smart coins. 
+然而，有些东西不能改变。 这些在SPECIFICATION.md描述，并且主要涉及验证，协议，以及用于智能硬币的实例。
 
 ### Pool Protocol Benefits
 The Chia pool protocol has been designed for security, and decentralization, not relying on any 3rd party, closed code,
