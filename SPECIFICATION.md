@@ -20,26 +20,23 @@ prevent session hijacking, leading to user funds being stolen.
 一个矿池运营商可以支持任何数量的农民。
 
 
-## Farmer 鉴定
+## Farmer 鉴别
 A farmer can be uniquely identified by the identifier of the farmer's singleton on the blockchain, this is what
 `launcher_id` refers to. The `launcher_id` can be used as a primary key in a database. The pool must periodically check
 the singleton's state on the blockchain to validate that it's farming to the pool, and not leaving or farming to another
 pool.
 
-## Farmer authentication
-For the farmer to authenticate to the pool the following time based authentication token scheme must be added to the
-signing messages of some endpoints.
+## Farmer 认证
+为了让Farmer对矿池进行身份验证，必须将以下基于时间的身份验证令牌方案添加到某些endpoints的签名消息中。
 
 ```
 authentication_token = current_utc_minutes / authentication_token_timeout
 ```
 
-Where `authentication_token_timeout` is a configuration parameter of the pool which is also included in the
-[GET /pool_info](#get-pool_info) response that must be respected by the farmer. Whereas `current_utc_minutes` is the
-local UTC timestamp in **minutes** at the moment of signing. The local clock should ideally be in sync with a time
-synchronization protocol e.g., NTP. The authentication token is usually included in a signed payload.
+其中，`authentication_token_timeout`是矿池的配置参数，该参数也包含在 [GET /pool_info](#get-pool_info) 响应中，Farmer必须遵守该参数。 而`current_utc_minutes`是签名是**minutes**中的本地UTC时间戳。 理想情况下，本地时钟应与时间同步协议（例如 NTP）同步。 身份验证令牌通常包含在签名的有效payload中。
 
-## HTTPS Endpoints Summary
+
+## Https 协议摘要
 
 The pool protocol consists of several HTTPS endpoints which return JSON responses. The HTTPS server can run on any port,
 but must be running with TLS enabled (using a CA approved certificate), and with pipelining enabled.
@@ -52,16 +49,15 @@ All bytes values are encoded as hex with optional 0x in front. Clients are also 
 - [POST /partial](#post-partial)
 - [GET /login (Optional)](#get-login)
 
-## Error codes
+## 错误代码
 
-A failed endpoint will always return a JSON object with an error code and an
-english error message as shown below:
+执行失败的endpoint将始终返回一个带有错误代码和英文错误消息的JSON对象，如下所示：
 
 ```json
 {"error_code": 0, "error_message": ""}
 ```
 
-The following errors may occur:
+可能出现以下错误:
 
 |Error code|Description|
 |---|---|
@@ -82,7 +78,7 @@ The following errors may occur:
 | 0x0F | Delay time too short |
 | 0x10 | Request failed |
 
-## Signature validation
+## 签名验证
 
 Most of the endpoints require signature validation. The validation requires serialization of the endpoints payloads
 to calculate the message hash which is done like:
@@ -94,9 +90,10 @@ message_hash = sha256(serialized_payload)
 The serialized payload must follow the `Streamable` standard defined
 [here](https://github.com/Chia-Network/chia-blockchain/blob/main/chia/util/streamable.py).
 
-## Pool URL
-The pool URL is the url that farmers use to connect to the pool. The subdomains, port, and path are optional. The client
-will use 443 if there is no port. Note that the trailing slash must NOT be present. Everything must be lower case.
+## 矿池 URL
+
+矿池 URL是Farmer用来连接池的URL。子域名、端口和路径是可选的。客户如果没有端口，将使用443。请注意，后面的斜杠不能出现。一切都必须小写。
+
 ```
 https://subdomain.domain.tld:port/path
 ```
@@ -123,27 +120,26 @@ scripts and JS injections. It returns a JSON response with the following data:
 ```
 
 #### description
-The description is a short paragraph that can be displayed in GUIs when the farmer enters a pool URL.
+描述是一个简短的段落，当农民输入矿池URL时，可以在客户端中显示。
 
 #### fee
-The fee that the pool charges by default, a number between 0.0 (0.0%) and 1.0 (100.0%). This does not include blockchain
-transaction fees.
+矿池默认收取的费用，介于0.0（0.0%）和1.0（100.0%）之间的数字。这不包括区块链交易费用。
 
 #### logo_url
-A URL for a pool logo that the client can display in the UI. This is optional for v1.0.
+客户端可以在UI中显示的矿池Logo的URL。这对于v1.0是可选的。
 
 #### minimum_difficulty
-The minimum difficulty that the pool supports. This will also be the default that farmers start sending proofs for.
+矿池支持的最小难度。这也将是默认的农民开始发送证据。
 
 #### name
-Name of the pool, this is only for display purposes and does not go on the blockchain.
+矿池的名称，仅用于显示目的，不在区块链上显示。
 
 #### protocol_version
-The pool protocol version supported by the pool.
+矿池支持的矿池协议版本。
 
 #### relative_lock_height
-The number of blocks (confirmations) that a user must wait between the point when they start escaping a pool, and the
-point at which they can finalize their pool switch. Must be less than 4608 (approximately 24 hours).
+从用户开始更换矿池到完成更换新矿池，用户必须等待的块（确认）数。必须小于4608（约24小时）。
+
 
 #### target_puzzle_hash
 This is the target of where rewards will be sent to from the singleton. Controlled by the pool.
@@ -456,7 +452,7 @@ signature must be signed by the private key of the `authentication_public_key` u
 IETF spec.
 
 
-## Difficulty
+## 难度
 The difficulty allows the pool operator to control how many partials per day they are receiving from each farmer.
 The difficulty can be adjusted separately for each farmer. A reasonable target would be 300 partials per day,
 to ensure frequent feedback to the farmer, and low variability.
@@ -467,9 +463,5 @@ calculating whether a proof is high quality enough for being awarded points, the
 If the farmer submits a proof that is not good enough for the current difficulty, the pool should respond by setting
 the `current_difficulty` in the response.
 
-## Points
-X points are awarded for submitting a partial with difficulty X, which means that points scale linearly with difficulty.
-For example, 100 TiB of space should yield approximately 10,000 points per day, whether the difficulty is set to
-100 or 200. It should not matter what difficulty is set for a farmer, as long as they are consistently submitting partials.
-The specification does not require pools to pay out proportionally by points, but the payout scheme should be clear to
-farmers, and points should be acknowledged and accumulated points returned in the response.
+## 点数
+提交难度为 X 的部分将获得 X 分，这意味着分数与难度呈线性关系。例如，100 TiB 的空间每天应该产生大约 10,000 分，无论难度设置为 100 还是 200。应该没有关系 给农民设置什么难度，只要他们一直提交部分。 规范没有要求池按积分比例支付，但支付方案应向农民明确，并应承认积分并在积分中返还 响应。
