@@ -1,14 +1,10 @@
-# Chia Pool Protocol 1.0
+# 奇亚矿池协议 1.0
 
-This is the initial version of the Chia Pool Protocol. It is designed to be simple, and to be extended later.
-It relies on farmers having smart coins (referred to as Pool NFTs in GUI + CLI) which allow them to switch between pools
-by making transactions on the blockchain. Furthermore, it decreases the reliance on pools for block production, since
-the protocol only handles distribution of rewards, and it protects against pools or farmers acting maliciously.
+这是Chia矿池协议的初始版本。它的设计很简单，以后可以扩展。它依赖于农民拥有智能硬币（在GUI+CLI中称为池nft），允许他们在矿池之间切换在区块链上进行交易。此外，由于该协议只处理奖励的分配，它可以防止矿池或农民的恶意行为。
 
 
-## Security considerations
-The pool must ensure that partials arrive quickly, faster than the 28 second time limit of inclusion into the
-blockchain. This allows farmers that have slow setups to detect issues.
+## 安全注意事项
+矿池必须确保部分数据很快到达，比包含到区块的28秒时间限制还要快。如果农民设置缓慢则会出现问题。
 
 The Pool server must check that the `pool_contract_puzzle_hash` a.k.a. `p2_singleton_puzzle_hash` matches the
 puzzle that they expect. Otherwise, the pool has no guarantee that users will not attempt to claim block rewards
@@ -20,14 +16,11 @@ prevent session hijacking, leading to user funds being stolen.
 
 ## Parties
 
-The parties involved in the pool protocol are the pool operator and farmers. Each farmer is running
-a farmer process, and any number of harvester processes connected to that farmer process. The full node can either be
-run by the farmer (the default in the Chia GUI application), or run by the pool operator. If the farmer does not want
-to run a full node, they can configure their node to connect to a remote full node.
+矿池协议涉及的各方是矿池运营商和farmer。每个farmer都在运行一个farmer进程，以及连接到该farmer进程的任意数量的harvester进程。full node可以由farmer（Chia GUI应用程序中的默认值）运行，也可以由矿池运营商运行。如果farmer不想运行完整节点，他们可以将节点配置为连接到remote full node。
+一个矿池运营商可以支持任何数量的农民。
 
-A pool operator can support any number of farmers.
 
-## Farmer identification
+## Farmer 鉴定
 A farmer can be uniquely identified by the identifier of the farmer's singleton on the blockchain, this is what
 `launcher_id` refers to. The `launcher_id` can be used as a primary key in a database. The pool must periodically check
 the singleton's state on the blockchain to validate that it's farming to the pool, and not leaving or farming to another
